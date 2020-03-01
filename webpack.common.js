@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { VueLoaderPlugin } = require("vue-loader");
 
 module.exports = {
@@ -22,30 +23,9 @@ module.exports = {
                 }
             },
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: "babel-loader"
-                    }
-                ]
-            },
-            {
-                exclude: /node_modules/,
                 test: /\.vue$/,
                 loader: "vue-loader",
-                options: {
-                    loaders: {
-                        scss:
-                            "vue-style-loader!node-sass!sass-loader!css-loader", // <style lang="scss">
-                        sass:
-                            "vue-style-loader!css-loader!sass-loader?indentedSyntax" // <style lang="sass">
-                    }
-                }
-            },
-            {
-                test: /\.scss$/,
-                use: ["vue-style-loader", "css-loader", "sass-loader"]
+                exclude: /node_modules/
             },
             {
                 exclude: /node_modules/,
@@ -60,11 +40,21 @@ module.exports = {
                 test: /\.(png|jpg|jpeg)$/i,
                 use: [
                     {
-                        loader: "file-loader"
+                        loader: "file-loader",
+                        options: {
+                            name: "assets/[name].[hash].[ext]"
+                        }
                     }
                 ]
             }
         ]
     },
-    plugins: [new VueLoaderPlugin()]
+    plugins: [
+        new VueLoaderPlugin(),
+        new HtmlWebpackPlugin({
+            title: "SDCalculator",
+            template: path.resolve(__dirname, "public", "index.html"),
+            favicon: path.resolve(__dirname, "public", "favicon.ico")
+        })
+    ]
 };

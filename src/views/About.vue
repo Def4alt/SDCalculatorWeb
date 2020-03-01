@@ -1,5 +1,19 @@
 <template>
     <div class="about">
-        <h1>This is an about page</h1>
+        <p class="text">This is an about page</p>
     </div>
 </template>
+
+<style lang="scss" scoped>
+@import "@/variables.scss";
+
+.about {
+    display: block;
+    height: 100%;
+
+    .text {
+        margin-top: 40vh;
+        font-size: 30px;
+    }
+}
+</style>
