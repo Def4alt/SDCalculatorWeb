@@ -13,10 +13,9 @@
                     <div class="button r" id="button-3">
                         <input
                             type="checkbox"
-                            ref="mode"
                             checked
                             class="checkbox"
-                            @change="setColor"
+                            v-model="SDMode"
                         />
                         <div class="knobs"></div>
                         <div class="layer"></div>
@@ -40,7 +39,7 @@
                 <span class="file-custom">{{
                     files != null
                         ? files.length == 0
-                            ? "Select files..."
+                            ? "Choose files..."
                             : files.length == 1
                             ? files[0].name
                             : files.length
@@ -52,9 +51,17 @@
         <div class="buildDiv">
             <button
                 class="buildButton"
-                v-bind:style="{ backgroundColor: color }"
+                :style="{ backgroundColor: color }"
+                v-if="SDMode"
             >
-                {{ SDMode ? "Build charts" : "Add Average" }}
+                Build charts
+            </button>
+            <button
+                class="buildButton"
+                :style="{ backgroundColor: color }"
+                v-else
+            >
+                Add Average
             </button>
         </div>
     </div>
@@ -63,7 +70,7 @@
 <script lang="ts">
 // @ is an alias to /src
 import Test from "@/components/Test.vue";
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 
 @Component({
     components: {
@@ -90,14 +97,9 @@ export default class Home extends Vue {
         }
     }
 
-    setColor() {
-        if ((this.$refs.mode as HTMLInputElement).checked) {
-            this.color = "#0984e3";
-            this.SDMode = true;
-        } else {
-            this.color = "#00b894";
-            this.SDMode = false;
-        }
+    @Watch("SDMode")
+    setColor(sdMode: boolean) {
+        this.color = sdMode ? "#0984e3" : "#00b894";
     }
 }
 </script>
