@@ -39,12 +39,12 @@ module.exports = merge(common, {
             filename: "css/[name].[hash].css",
             chunkFilename: "css/[id].[hash].css"
         }),
-        new webpack.HashedModuleIdsPlugin()
+        new webpack.HashedModuleIdsPlugin(),
+        new CleanWebpackPlugin()
     ],
     optimization: {
         minimizer: [
             new TerserPlugin(),
-            new CleanWebpackPlugin(),
             new OptimizeCssAssetsPlugin({
                 cssProcessorPluginOptions: {
                     preset: [

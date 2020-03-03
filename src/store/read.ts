@@ -5,20 +5,19 @@ import GetStatistics from "./stats";
 import CheckValues from "./westgard";
 
 function getExtension(name: string): string {
-    return name;
+    return name.split(".").pop() as string;
 }
 
-export default function Calculate(
+export default async function Calculate(
     files: File[],
     globalStatModels: StatModel[],
     sdMode: boolean
-): StatModel[] {
-    let parsedRows: ReadModel[] = [];
-
+): Promise<StatModel[]> {
+    const parsedRows: ReadModel[] = [];
     for (const file of files) {
         const extension = getExtension(file.name);
         if (extension == "xlsx" || extension == "xls") {
-            Read(file).then(parsed => {
+            await Read(file).then(parsed => {
                 for (const model of parsed as ReadModel[]) {
                     parsedRows.push(model);
                 }
@@ -50,12 +49,12 @@ export default function Calculate(
                 globalModel.Date.push(model.Date[0]);
             }
 
-            let warning = CheckValues(
-                globalModel.Average,
-                globalModel.SD
-            );
+            let warning = CheckValues(globalModel.Average, globalModel.SD);
 
-            if (warning !== globalModel.Warnings[globalModel.Warnings.length - 1])
+            if (
+                warning !==
+                globalModel.Warnings[globalModel.Warnings.length - 1]
+            )
                 globalModel.Warnings.push(warning);
             else globalModel.Warnings.push(" ");
         }
@@ -75,8 +74,8 @@ const getValueFromCell = (r: number, c: number, sheet: Sheet) => {
     ];
 };
 
-function Read(file: File) {
-    const result = new Promise(resolve => {
+function Read(file: File): Promise<ReadModel[]> {
+    return new Promise(resolve => {
         const reader = new FileReader();
         reader.readAsBinaryString(file);
         reader.onload = () => {
@@ -91,8 +90,7 @@ function Read(file: File) {
                 .replace("_", "/")
                 .trim();
 
-            let date: Date = moment(dateString, "DD/MM/YY")
-                .toDate();
+            let date: Date = moment(dateString, "DD/MM/YY").toDate();
 
             dateString = date ? date.toUTCString() : new Date().toUTCString();
 
@@ -155,6 +153,4 @@ function Read(file: File) {
             resolve(models);
         };
     });
-
-    return result;
 }

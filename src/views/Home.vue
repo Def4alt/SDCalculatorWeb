@@ -1,7 +1,5 @@
 <template>
     <div class="home">
-        <Test msg="Welcome to Your Vue.js App" />
-
         <p id="lot">
             Lot <span id="lotNumber"> #{{ lot }}</span>
         </p>
@@ -52,36 +50,35 @@
             <button
                 class="buildButton"
                 :style="{ backgroundColor: color }"
-                v-if="SDMode"
+                @click="showCards"
             >
-                Build charts
+                {{ SDMode ? "Build charts" : "Add Average" }}
             </button>
-            <button
-                class="buildButton"
-                :style="{ backgroundColor: color }"
-                v-else
-            >
-                Add Average
-            </button>
+        </div>
+
+        <div class="cardsList">
+            <CardsList v-if="showList" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 // @ is an alias to /src
-import Test from "@/components/Test.vue";
+import CardsList from "@/components/CardsList.vue";
 import { Component, Vue, Watch } from "vue-property-decorator";
+import store from "@/store";
 
 @Component({
     components: {
-        Test
+        CardsList
     }
 })
 export default class Home extends Vue {
-    lot = 12454;
+    lot = store.state.lot;
     color = "#0984e3";
     files = [] as File[];
     SDMode = true;
+    showList = false;
 
     getFiles() {
         this.files = [];
@@ -95,11 +92,17 @@ export default class Home extends Vue {
         for (const file of fileList) {
             this.files.push(file);
         }
+        store.commit("setFiles", this.files);
+    }
+
+    showCards() {
+        this.showList = true;
     }
 
     @Watch("SDMode")
     setColor(sdMode: boolean) {
         this.color = sdMode ? "#0984e3" : "#00b894";
+        store.commit("toggleSdMode");
     }
 }
 </script>
@@ -108,6 +111,10 @@ export default class Home extends Vue {
 @import "@/variables.scss";
 
 $margin-left: calc(50vw - 160px);
+
+.cardsList {
+    margin-top: 32.5vh;
+}
 
 .home {
     display: block;

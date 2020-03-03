@@ -1,9 +1,9 @@
 import moment from "moment";
 import { ReadModel, SampleType, StatModel } from "@/types";
 
-function GetStatistics(models: ReadModel[]) {
-    const lvlOneRows = models.filter(t => t.SampleType === SampleType.Lvl1);
-    const lvlTwoRows = models.filter(t => t.SampleType === SampleType.Lvl2);
+function GetStatistics(models: Array<ReadModel>) {
+    let lvlOneRows = models.filter(t => t.SampleType === SampleType.Lvl1);
+    let lvlTwoRows = models.filter(t => t.SampleType === SampleType.Lvl2);
 
     const row = lvlOneRows[0];
 
@@ -38,7 +38,7 @@ function GetStatistics(models: ReadModel[]) {
 }
 
 function GetModel(
-    lvlRows: ReadModel[],
+    lvlRows: Array<ReadModel>,
     testName: string,
     sampleType: SampleType
 ) {
@@ -60,7 +60,7 @@ function GetModel(
     };
 }
 
-function GetAverageFor(models: ReadModel[], testName: string) {
+function GetAverageFor(models: Array<ReadModel>, testName: string) {
     const nonFailedResults = GetNonFailedResults(models, testName).map(
         t => t.TestResults[testName]
     );
@@ -71,7 +71,7 @@ function GetAverageFor(models: ReadModel[], testName: string) {
     );
 }
 
-function GetStandardDeviation(models: ReadModel[], testName: string) {
+function GetStandardDeviation(models: Array<ReadModel>, testName: string) {
     const nonFailedResults = GetNonFailedResults(models, testName).map(
         t => t.TestResults[testName]
     );
@@ -87,7 +87,7 @@ function GetStandardDeviation(models: ReadModel[], testName: string) {
     return Math.sqrt(sqSum);
 }
 
-function GetNonFailedResults(models: ReadModel[], testName: string) {
+function GetNonFailedResults(models: Array<ReadModel>, testName: string) {
     return models
         .filter((t: ReadModel) => !t.FailedTests.includes(testName.trim()))
         .filter((t: ReadModel) => testName in t.TestResults);
