@@ -12,7 +12,6 @@ type state = {
     backups: Array<BackupModel>;
     lot: number;
     sdMode: boolean;
-    files: File[];
 };
 
 export default new Vuex.Store({
@@ -20,8 +19,7 @@ export default new Vuex.Store({
         globalStatModels: Array<StatModel>(),
         backups: Array<BackupModel>(),
         lot: 0,
-        sdMode: true,
-        files: [] as File[]
+        sdMode: true
     },
     mutations: {
         setGlobalStatModels(state: state, globalStatModels) {
@@ -34,16 +32,12 @@ export default new Vuex.Store({
 
         toggleSdMode(state: state) {
             state.sdMode = !state.sdMode;
-        },
-
-        setFiles(state: state, files) {
-            state.files = files;
         }
     },
     actions: {
-        calculateStatModels({ commit, state }) {
+        calculateStatModels({ commit, state }, files) {
             Calculate(
-                state.files,
+                files,
                 state.globalStatModels,
                 state.sdMode
             ).then(models => commit("setGlobalStatModels", models));

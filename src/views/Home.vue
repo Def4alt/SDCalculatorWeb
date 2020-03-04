@@ -50,7 +50,7 @@
             <button
                 class="buildButton"
                 :style="{ backgroundColor: color }"
-                @click="showCards"
+                @click="buildCards"
             >
                 {{ SDMode ? "Build charts" : "Add Average" }}
             </button>
@@ -83,20 +83,19 @@ export default class Home extends Vue {
     getFiles() {
         this.files = [];
 
+        const fileElement = this.$refs.calcFiles as HTMLInputElement;
+
         const fileList: FileList =
-            (this.$refs.calcFiles as HTMLInputElement).files == null
-                ? new FileList()
-                : ((this.$refs.calcFiles as HTMLInputElement)
-                      .files as FileList);
+            fileElement.files == null ? new FileList() : fileElement.files;
 
         for (const file of fileList) {
             this.files.push(file);
         }
-        store.commit("setFiles", this.files);
     }
 
-    showCards() {
+    buildCards() {
         this.showList = true;
+        store.dispatch("calculateStatModels", this.files);
     }
 
     @Watch("SDMode")
