@@ -1,14 +1,22 @@
 <template>
-    <div><Card></Card></div>
+    <div class="container">
+        <Card
+            v-for="(model, index) in statModels"
+            :key="index"
+            :model="model"
+            class="card"
+        ></Card>
+    </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import store from "@/store";
-import Card from "./Card.vue";
 
 @Component({
-    components: { Card }
+    components: {
+        Card: () => import("./Card.vue")
+    }
 })
 export default class CardsList extends Vue {
     get statModels() {
@@ -21,4 +29,11 @@ export default class CardsList extends Vue {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-around;
+}
+</style>
