@@ -13,6 +13,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import LineChart from "./LineChart.vue";
 import { StatModel, SampleType } from "@/types";
+import moment from "moment";
 
 @Component({
     components: { LineChart },
@@ -40,8 +41,16 @@ export default class Card extends Vue {
     data = {
         labels:
             this.statModel.Date.length == 1
-                ? Array(2).fill(this.statModel.Date[0])
-                : this.statModel.Date,
+                ? Array(2).fill(
+                      moment(this.statModel.Date[0])
+                          .format("MM/DD/YYYY")
+                          .toLocaleString()
+                  )
+                : this.statModel.Date.map(date =>
+                      moment(date)
+                          .format("MM/DD/YYYY")
+                          .toLocaleString()
+                  ),
         datasets: [
             {
                 label: "M + 3SD",
