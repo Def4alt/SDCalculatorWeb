@@ -3,15 +3,13 @@
         <div class="card_image">
             <LineChart :chartData="data" :options="options" />
         </div>
-        <div class="card_title title-black">
-            <p>{{ title }}</p>
-        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import LineChart from "./LineChart.vue";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { StatModel, SampleType } from "@/types";
 import moment from "moment";
 
@@ -59,7 +57,12 @@ export default class Card extends Vue {
                 borderDash: [8],
                 data: Array(this.statModel.Average.length + 1).fill(
                     this.statModel.Average[0] + 3 * this.statModel.SD
-                )
+                ),
+                datalabels: {
+                    labels: {
+                        title: null
+                    }
+                }
             },
             {
                 label: "M + 2SD",
@@ -68,7 +71,12 @@ export default class Card extends Vue {
                 borderDash: [8],
                 data: Array(this.statModel.Average.length + 1).fill(
                     this.statModel.Average[0] + 2 * this.statModel.SD
-                )
+                ),
+                datalabels: {
+                    labels: {
+                        title: null
+                    }
+                }
             },
             {
                 label: "M + SD",
@@ -77,7 +85,12 @@ export default class Card extends Vue {
                 borderDash: [8],
                 data: Array(this.statModel.Average.length + 1).fill(
                     this.statModel.Average[0] + this.statModel.SD
-                )
+                ),
+                datalabels: {
+                    labels: {
+                        title: null
+                    }
+                }
             },
             {
                 label: "M",
@@ -86,7 +99,12 @@ export default class Card extends Vue {
                 borderDash: [8],
                 data: Array(this.statModel.Average.length + 1).fill(
                     this.statModel.Average[0]
-                )
+                ),
+                datalabels: {
+                    labels: {
+                        title: null
+                    }
+                }
             },
             {
                 label: "M - SD",
@@ -95,7 +113,12 @@ export default class Card extends Vue {
                 borderDash: [8],
                 data: Array(this.statModel.Average.length + 1).fill(
                     this.statModel.Average[0] - this.statModel.SD
-                )
+                ),
+                datalabels: {
+                    labels: {
+                        title: null
+                    }
+                }
             },
             {
                 label: "M - 2SD",
@@ -104,7 +127,12 @@ export default class Card extends Vue {
                 borderDash: [8],
                 data: Array(this.statModel.Average.length + 1).fill(
                     this.statModel.Average[0] - 2 * this.statModel.SD
-                )
+                ),
+                datalabels: {
+                    labels: {
+                        title: null
+                    }
+                }
             },
             {
                 label: "M - 3SD",
@@ -113,28 +141,58 @@ export default class Card extends Vue {
                 borderDash: [8],
                 data: Array(this.statModel.Average.length + 1).fill(
                     this.statModel.Average[0] - 3 * this.statModel.SD
-                )
+                ),
+                datalabels: {
+                    labels: {
+                        title: null
+                    }
+                }
             },
             {
-                label: "Lvl",
+                label: this.getLevelText(this.statModel.SampleType),
                 borderColor: "#d63031",
                 fill: false,
                 borderWidth: 5,
                 data:
                     this.statModel.Average.length == 1
                         ? Array(2).fill(this.statModel.Average[0])
-                        : this.statModel.Average
+                        : this.statModel.Average,
+
+                datalabels: {
+                    color: "#ffffff",
+                    labels: {
+                        title: {
+                            font: {
+                                weight: "bold"
+                            }
+                        },
+                        value: {
+                            color: "#ffffff"
+                        },
+                        backgroundColor: {
+                            backgroundColor: "#0984e3"
+                        }
+                    },
+                    borderRadius: 5
+                }
             }
         ]
     };
 
     options = {
         legend: {
-            display: false
+            display: true,
+            position: "left"
         },
         height: 360,
         width: 500,
         responsive: true,
+        title: {
+            text: this.title,
+            display: true,
+            position: "top",
+            fontSize: 22
+        },
         maintainAspectRatio: false,
         layout: {
             padding: {
@@ -142,6 +200,13 @@ export default class Card extends Vue {
                 right: 15,
                 top: 20,
                 bottom: 20
+            }
+        },
+        plugins: {
+            datalabels: {
+                formatter: function(value: number) {
+                    return Math.floor(value * 100) / 100;
+                }
             }
         }
     };
@@ -153,6 +218,7 @@ export default class Card extends Vue {
 
 .card {
     margin: 30px auto;
+    cursor: default;
     width: 520px;
     height: 380px;
     border-radius: 20px;
@@ -178,16 +244,12 @@ export default class Card extends Vue {
 
 .card .card_title {
     text-align: center;
-    border-radius: 0px 0px 40px 40px;
+    background-color: $grey;
+    border-radius: 20px 20px 0px 0px;
     font-family: sans-serif;
     font-size: 25px;
-    margin-top: -390px;
+    margin-top: -410px;
     height: 40px;
-}
-
-.card:hover {
-    transform: scale(0.9, 0.9);
-    box-shadow: 23px 23px 46px #d9d9d9, -23px -23px 46px #ffffff;
 }
 
 .title-white {
