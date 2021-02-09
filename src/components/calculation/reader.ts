@@ -247,14 +247,9 @@ export const appendStatModel = (previousModel: StatModel, model: StatModel): Sta
 
 export const getWarning = (model: StatModel) => {
     const westgard = new Westgard();
-    const warning = westgard.check(model.Average, model.SD);
+    const warning = westgard.check(model.Average, model.SD, model.Warnings);
 
-    const previousWarning = model.Warnings[model.Warnings.length - 1];
-
-    if (warning !== previousWarning)
-        return warning;
-
-    return " ";
+    return warning;
 }
 
 export default calculate;

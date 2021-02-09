@@ -3,25 +3,25 @@ export default class Westgard {
     public sd: number = 0;
 
 
-    check(averageValues: number[], sd: number): string {
+    check(averageValues: number[], sd: number, previousWarnings: string[]): string {
         this.averageValues = averageValues;
         this.sd = sd;
 
         for (let i = 1; i < this.averageValues.length; i++) {
             const numbersLeft = this.averageValues.length - i;
 
-            if (numbersLeft >= 8 && this.Rule8X(i))
+            if (numbersLeft >= 8 && this.Rule8X(i) && previousWarnings[i - 1] !== "8X")
                 return "8X";
 
-            if (numbersLeft >= 4 && this.Rule41S(i))
+            if (numbersLeft >= 4 && this.Rule41S(i) && previousWarnings[i - 1] !== "41S")
                 return "41S";
 
             if (numbersLeft >= 2) {
-                if (this.Rule22S(i)) return "22S";
-                else if (this.RuleR4S(i)) return "R4S";
+                if (this.Rule22S(i) && previousWarnings[i - 1] !== "22S") return "22S";
+                else if (this.RuleR4S(i) && previousWarnings[i - 1] !== "R4S") return "R4S";
             }
 
-            if (this.Rule13S(i))
+            if (this.Rule13S(i) && previousWarnings[i - 1] !== "13S")
                 return "13S";
         }
 
@@ -50,9 +50,9 @@ export default class Westgard {
 
     RuleR4S(index: number): boolean {
         return (this.isValueExceedsPlus2SD(this.averageValues[index]) &&
-            this.isValueExceedsMinus2SD(this.averageValues[index + 1]) ||
+            this.isValueExceedsMinus2SD(this.averageValues[index + 1])) ||
             (this.isValueExceedsMinus2SD(this.averageValues[index]) &&
-                this.isValueExceedsPlus2SD(this.averageValues[index + 1])));
+                this.isValueExceedsPlus2SD(this.averageValues[index + 1]));
     }
 
     Rule8X(index: number): boolean {
